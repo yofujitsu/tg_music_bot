@@ -2,7 +2,7 @@ import setuptools
 import random
 import telebot
 from telebot import types
-import vk_api
+# import vk_api
 import aiogram
 import requests
 from bs4 import BeautifulSoup as b
