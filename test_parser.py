@@ -3,29 +3,45 @@ from vk_api import audio
 import requests
 from time import time
 import os
-
-
 REQUEST_STATUS_CODE = 200
 
 # Данные левого акка, чтобы api работал
 # можно не менять
-login = '+79966289022'  # Номер телефона
-password = 'Qwerty12345*'  # Пароль
-my_id = '790690401' # Ваш id
+login = 'your_login'  # Номер телефона
+password = 'your_pswrd'  # Пароль
+my_id = 'your_id' # Ваш id
 
-path = r'C:\Users\rodio\OneDrive\Рабочий стол\m'  # Нужно прописать путь,куда скачают файлы
+path = r'C:\Users\sesa7\Desktop\media\music\mp3'  # Нужно прописать путь,куда скачают файлы
+
+def auth_handler():
+    """ При двухфакторной аутентификации вызывается эта функция.
+    """
+
+    # Код двухфакторной аутентификации
+    key = input("Enter authentication code: ")
+    # Если: True - сохранить, False - не сохранять.
+    remember_device = True
+
+    return key, remember_device
 
 if not os.path.exists(path):
     os.makedirs(path)
 
-vk_session = vk_api.VkApi(login=login, password=password)
-vk_session.auth()
+vk_session = vk_api.VkApi(
+        login, password,
+        # функция для обработки двухфакторной аутентификации
+        auth_handler=auth_handler
+    )
+
+try:
+    vk_session.auth()
+except vk_api.AuthError as error_msg:
+    print(error_msg)
+
 vk = vk_session.get_api()
 vk_audio = audio.VkAudio(vk_session)
 
 os.chdir(path)
-
-
 
 i = vk_audio.get(owner_id=my_id)[0]
 r = requests.get(i["url"])
