@@ -9,6 +9,7 @@ from Cryptodome.Util.Padding import unpad
 
 
 class M3U8Downloader:
+    #bebta
 
     def __init__(self, login: str, password: str):
 
