@@ -20,9 +20,9 @@ class MyPerson():
     mytrack = []
     count=5
     page=1
-    def __init__(self,TOCKEN):
-        self.TOCKEN=TOCKEN
-        self.client = Client(TOCKEN).init()
+    def __init__(self,TOKEN):
+        self.TOKEN=TOKEN
+        self.client = Client(TOKEN).init()
 
 
     def get_lickes_tracks(self):
@@ -38,12 +38,12 @@ class MyPerson():
                 i.tr.fetch_track().download(i.author+" - "+i.title+".mp3")
 
 
-'''Сюда нужно передать токен'''
-person=MyPerson()
-person.get_lickes_tracks()
-for i in range(len(person.mytrack)):
-    print(person.mytrack[i].id,person.mytrack[i].title,person.mytrack[i].author)
-person.douwload(person.mytrack[0].id)
+# '''Сюда нужно передать токен'''
+# person=MyPerson()
+# person.get_lickes_tracks()
+# for i in range(len(person.mytrack)):
+#     print(person.mytrack[i].id,person.mytrack[i].title,person.mytrack[i].author)
+# person.download(person.mytrack[0].id)
 
 
 
