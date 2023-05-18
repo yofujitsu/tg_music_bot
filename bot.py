@@ -65,7 +65,7 @@ def bebra(message):
 @bot.message_handler(content_types=['sticker'])
 def cmd_inline_url(message: types.Message):
     buttons = [
-        types.InlineKeyboardButton(text="track 1", callback_data="1"),
+        types.InlineKeyboardButton(text="track 1", callback_data="1",),
         types.InlineKeyboardButton(text="track 2", callback_data="2"),
         types.InlineKeyboardButton(text="track 3", callback_data="3"),
         types.InlineKeyboardButton(text="track 4", callback_data="4"),
