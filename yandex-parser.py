@@ -25,17 +25,21 @@ class MyPerson():
         self.client = Client(TOKEN).init()
 
 
-    def get_lickes_tracks(self):
-        if (len(self.mytrack)==0):
-            tracks = self.client.users_likes_tracks()
-            for i in range(0+MyPerson.count*MyPerson.page-5,MyPerson.count*MyPerson.page):
-                self.mytrack.append(Track(tracks[i].id,tracks[i],self.client.tracks(tracks[i].id)[0].title,"".join(self.client.tracks(tracks[i].id)[0].artists_name())))
+    def get_likes_tracks(self):
+        self.mytrack = []
+        tracks = self.client.users_likes_tracks()
+        for i in range(0+self.count*self.page-5,self.count*self.page):
+            print(0+self.count*self.page-5,self.count*self.page, self.page)
+            self.mytrack.append(Track(tracks[i].id,tracks[i],self.client.tracks(tracks[i].id)[0].title,", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
     def download(self,id):
         for i in self.mytrack:
             if (i.id==id):
                 print("win")
                 i.tr.fetch_track().download(i.author+" - "+i.title+".mp3")
+                title = i.author+" - "+i.title+".mp3"
+                break
+        return title
 
 
 # '''Сюда нужно передать токен'''
