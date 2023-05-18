@@ -152,6 +152,34 @@ def my_favourites(call):
         keyboard.row(*low_row)
         keyboard.row(*low_links)
         bot.send_message(call.message.chat.id, text="Список аудиозаписей", reply_markup=keyboard)
+    if call.data == "prev" and me.page>1:
+        me.page-=1
+        tracks_titles = me.get_likes_tracks()
+        buttons = [
+            # types.InlineKeyboardButton(text=track.titles[0], callback_data="track_1"),
+            # types.InlineKeyboardButton(text="track 2", callback_data="track_2"),
+            # types.InlineKeyboardButton(text="track 3", callback_data="track_3"),
+            # types.InlineKeyboardButton(text="track 4", callback_data="track_4"),
+            # types.InlineKeyboardButton(text="track 5", callback_data="track_5")
+        ]
+        for i in range(len(tracks_titles)):
+            buttons.append(types.InlineKeyboardButton(text=tracks_titles[i].author + " " + tracks_titles[i].title,
+                                                      callback_data='i' + tracks_titles[i].id))
+        keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+        low_row = [
+            types.InlineKeyboardButton(text="1", callback_data="curr_page"),
+            types.InlineKeyboardButton(text="<-", callback_data="prev"),
+            types.InlineKeyboardButton(text="curr page", callback_data="curr"),
+            types.InlineKeyboardButton(text="->", callback_data="next"),
+            types.InlineKeyboardButton(text="last page", callback_data="last_page")
+        ]
+        low_links = [
+            types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+            types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+        ]
+        keyboard.row(*low_row)
+        keyboard.row(*low_links)
+        bot.send_message(call.message.chat.id, text="Список аудиозаписей", reply_markup=keyboard)
 
 
 bot.polling()
