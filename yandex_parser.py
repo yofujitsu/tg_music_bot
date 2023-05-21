@@ -19,9 +19,13 @@ class MyPerson():
     mytrack = []
     count=5
     page=1
+    curr_playlist = ''
     def __init__(self,TOKEN):
         self.TOKEN=TOKEN
         self.client = Client(TOKEN).init()
+
+    def setPlaylist(self, playId):
+        self.curr_playlist = playId
 
     type_to_name = {
         'track': 'трек',
@@ -34,7 +38,7 @@ class MyPerson():
         'podcast_episode': 'эпизод подкаста'
     }
 
-    def get_likes_tracks(self,page=0):
+    def get_likes_tracks(self, page=0):
         if page==0:
             self.page=1
         else:
@@ -43,9 +47,10 @@ class MyPerson():
         tracks = self.client.users_likes_tracks()
         for i in range(0+self.count*self.page-5,self.count*self.page):
             print(0+self.count*self.page-5,self.count*self.page, self.page)
-            self.mytrack.append(Track(tracks[i].id,tracks[i],self.client.tracks(tracks[i].id)[0].title,", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
+            self.mytrack.append(Track(int(tracks[i].id),tracks[i],self.client.tracks(tracks[i].id)[0].title,", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
     def download(self,id):
+        id = int(id)
         for i in self.mytrack:
             if (i.id==id):
                 print("win")
@@ -94,24 +99,28 @@ class MyPerson():
             text.append(f'Видео: {search_result.videos.total}')
 
         text.append('')
-        print('\n'.join(text))
+        return '\n'.join(text)
 
-    def get_playlist(self):
+    def test(self):
+        print(self.client.usersPlaylistsList()[0].playlistId)
+        print(self.client.usersPlaylists(1006).tracks[1].track.title)
+
+    def get_playlists(self):
         res=[]
         for i in self.client.usersPlaylistsList():
             res.append([i.title,i.playlistId.split(":")[1]])
         return res
-    def get_tracks_by_playlist(self,playId,page=0):
+    def get_tracks_by_playlist(self,page=0):
         if page==0:
             self.page=1
         else:
             self.page+=page
-        tracks=self.client.usersPlaylists(playId).tracks
+        tracks=self.client.usersPlaylists(self.curr_playlist).tracks
         self.mytrack = []
         for i in range(0 + self.count * self.page - 5, self.count * self.page):
             if i<len(tracks):
                 print(0 + self.count * self.page - 5, self.count * self.page, self.page)
-                self.mytrack.append(Track(tracks[i].id, tracks[i], self.client.tracks(tracks[i].id)[0].title,
+                self.mytrack.append(Track(int(tracks[i].id), tracks[i], self.client.tracks(tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
 
@@ -126,8 +135,7 @@ class MyPerson():
 # person.download(person.mytrack[0].id)
 
 
-pers=MyPerson("y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60")
-print(pers.get_playlist())
+
 
 
 
@@ -139,8 +147,15 @@ print(pers.get_playlist())
 #
 # track=client.users_likes_tracks()[0]
 # print(client.tracks(track.id)[0].title)
-# person=MyPerson("y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60")
+# person=MyPerson('AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo')
 # print(person.get_lickes_tracks()[0].author)
+# MyPerson.page=3
+# MyPerson.count=5
+# person.test()
+# list=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+# for i in range(0+MyPerson.count*MyPerson.page-5,MyPerson.count*MyPerson.page):
+#     print(list[i])
+
 # MyPerson.page=3
 # MyPerson.count=5
 # list=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
