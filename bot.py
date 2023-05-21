@@ -148,7 +148,7 @@ def my_favourites(call):
         buttons = []
         for i in range(len(tracks_titles)):
             buttons.append(types.InlineKeyboardButton(text=tracks_titles[i].author + " " + tracks_titles[i].title,
-                                                      callback_data='i' + tracks_titles[i].id))
+                                                      callback_data='i' + str(tracks_titles[i].id)))
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_my"),
@@ -168,7 +168,7 @@ def my_favourites(call):
         buttons = []
         for i in range(len(tracks_titles)):
             buttons.append(types.InlineKeyboardButton(text=tracks_titles[i].author + " " + tracks_titles[i].title,
-                                                      callback_data='i' + tracks_titles[i].id))
+                                                      callback_data='i' + str(tracks_titles[i].id)))
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_my"),
