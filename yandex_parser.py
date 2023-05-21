@@ -34,7 +34,11 @@ class MyPerson():
         'podcast_episode': 'эпизод подкаста'
     }
 
-    def get_likes_tracks(self):
+    def get_likes_tracks(self,page=0):
+        if page==0:
+            self.page=1
+        else:
+            self.page+=page
         self.mytrack = []
         tracks = self.client.users_likes_tracks()
         for i in range(0+self.count*self.page-5,self.count*self.page):
@@ -92,6 +96,27 @@ class MyPerson():
         text.append('')
         print('\n'.join(text))
 
+    def get_playlist(self):
+        res=[]
+        for i in self.client.usersPlaylistsList():
+            res.append([i.title,i.playlistId.split(":")[1]])
+        return res
+    def get_tracks_by_playlist(self,playId,page=0):
+        if page==0:
+            self.page=1
+        else:
+            self.page+=page
+        tracks=self.client.usersPlaylists(playId).tracks
+        self.mytrack = []
+        for i in range(0 + self.count * self.page - 5, self.count * self.page):
+            if i<len(tracks):
+                print(0 + self.count * self.page - 5, self.count * self.page, self.page)
+                self.mytrack.append(Track(tracks[i].id, tracks[i], self.client.tracks(tracks[i].id)[0].title,
+                                          ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
+        return self.mytrack
+
+
+
 
 # '''Сюда нужно передать токен'''
 # person=MyPerson()
@@ -101,7 +126,8 @@ class MyPerson():
 # person.download(person.mytrack[0].id)
 
 
-
+pers=MyPerson("y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60")
+print(pers.get_playlist())
 
 
 
@@ -115,8 +141,8 @@ class MyPerson():
 # print(client.tracks(track.id)[0].title)
 # person=MyPerson("y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60")
 # print(person.get_lickes_tracks()[0].author)
-MyPerson.page=3
-MyPerson.count=5
-list=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-for i in range(0+MyPerson.count*MyPerson.page-5,MyPerson.count*MyPerson.page):
-    print(list[i])
+# MyPerson.page=3
+# MyPerson.count=5
+# list=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+# for i in range(0+MyPerson.count*MyPerson.page-5,MyPerson.count*MyPerson.page):
+#     print(list[i])

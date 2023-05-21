@@ -129,8 +129,8 @@ def my_favourites(call):
         bot.send_message(call.message.chat.id, call.data)
         bot.send_audio(call.message.chat.id, audio)
     if call.data == "next":
-        me.page+=1
-        tracks_titles = me.get_likes_tracks()
+        # me.page+=1
+        tracks_titles = me.get_likes_tracks(+1)
         buttons = [
             # types.InlineKeyboardButton(text=track.titles[0], callback_data="track_1"),
             # types.InlineKeyboardButton(text="track 2", callback_data="track_2"),
@@ -157,8 +157,8 @@ def my_favourites(call):
         keyboard.row(*low_links)
         bot.send_message(call.message.chat.id, text="Список аудиозаписей", reply_markup=keyboard)
     if call.data == "prev" and me.page>1:
-        me.page-=1
-        tracks_titles = me.get_likes_tracks()
+        # me.page-=1
+        tracks_titles = me.get_likes_tracks(-1)
         buttons = [
             # types.InlineKeyboardButton(text=track.titles[0], callback_data="track_1"),
             # types.InlineKeyboardButton(text="track 2", callback_data="track_2"),
