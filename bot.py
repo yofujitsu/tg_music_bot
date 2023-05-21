@@ -41,7 +41,7 @@ def send_menu(message):
     btn3 = types.KeyboardButton("Музыка из плейлиста")
     btn4 = types.KeyboardButton("Музыка из чартов")
     btn5 = types.KeyboardButton("Музыка из рекомендаций")
-    btn6 = types.KeyboardButton("Общий поиск из базы")
+    btn6 = types.KeyboardButton("Поиск")
     back = types.KeyboardButton("Вернуться в главное меню")
     markup.add(btn1, btn2, btn3, btn4, btn5, btn6, back)
     bot.send_message(message.chat.id, text="ну че", reply_markup=markup)
@@ -57,7 +57,7 @@ def bebra(message):
 
     elif ((message.text == "Что я могу?") or (message.text == "Музыка из плейлиста") or (
             message.text == "Музыка из чартов") or
-          (message.text == "Музыка из рекомендаций") or (message.text == "Общий поиск из базы")):
+          (message.text == "Музыка из рекомендаций")):
         bot.send_message(message.chat.id, text="пока не готово. соре.")
 
     elif (message.text == "Музыка из профиля"):
@@ -68,6 +68,10 @@ def bebra(message):
         bot.send_audio(message.chat.id, audio)
         bot.send_message(message.chat.id, text=")")
         audio.close()
+
+    elif message.text == "Поиск":
+        query = input("Напишите, что хотите найти:")
+        me.search(query)
 
     elif (message.text == "Вернуться в главное меню"):
         bot.send_message(message.chat.id, text="waltuh... -_-", reply_markup=None)
