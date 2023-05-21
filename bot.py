@@ -3,19 +3,20 @@ import random
 import telebot
 from telebot import types
 from aiogram.types import *
-# import vk_api
 import aiogram
 import requests
 from bs4 import BeautifulSoup as b
 from yandex_music import Client
 from yandex_parser import MyPerson
 
-client = Client('AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo').init()
-track = client.users_likes_tracks()[4]
+client = Client().init()
+#'y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60'
+#'AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
 API_TOKEN = "5952876513:AAEG1jg7AiXYmPPx9U5_FraCq00HYEztkwE"
 
 bot = telebot.TeleBot(API_TOKEN)
 
+me = MyPerson()
 
 @bot.message_handler(commands=['start'])
 def hello(message):
@@ -25,10 +26,9 @@ def hello(message):
     btn1 = types.KeyboardButton("menu")
     btn2 = types.KeyboardButton("help")
     markup1.add(btn1, btn2)
-    bot.send_message(message.chat.id, text="ну че", reply_markup=markup1)
 
 
-@bot.message_handler(commands=['my', 'rs', 's', 'ps', 'help'])
+@bot.message_handler(commands=['help'])
 def commands_rofl(message):
     bot.send_message(message.chat.id, "пока не готово :(")
 
@@ -38,14 +38,14 @@ def send_menu(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("Что я могу?")
     btn2 = types.KeyboardButton("Мне нравится")
-    btn3 = types.KeyboardButton("Музыка из плейлиста")
-    btn4 = types.KeyboardButton("Музыка из чартов")
-    btn5 = types.KeyboardButton("Музыка из рекомендаций")
-    btn6 = types.KeyboardButton("Поиск")
+    btn3 = types.KeyboardButton("Музыка из моих плейлистов")
+    btn4 = types.KeyboardButton("Музыка из моих альбомов")
+    btn5 = types.KeyboardButton("Войти")
+    btn6 = types.KeyboardButton("Выйти")
+    btn7 = types.KeyboardButton("Поиск")
     back = types.KeyboardButton("Вернуться в главное меню")
-    markup.add(btn1, btn2, btn3, btn4, btn5, btn6, back)
-    bot.send_message(message.chat.id, text="ну че", reply_markup=markup)
-
+    markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, back)
+    bot.send_message(message.chat.id, text="меню", reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
 def bebra(message):
@@ -55,15 +55,23 @@ def bebra(message):
     elif (message.text == "help"):
         bot.send_message(message.chat.id, text="не могу помочь с этим.")
 
-    elif ((message.text == "Что я могу?") or (
-            message.text == "Музыка из чартов") or
-          (message.text == "Музыка из рекомендаций")):
+    elif (message.text == "Что я могу?"):
         bot.send_message(message.chat.id, text="пока не готово. соре.")
+
+    elif message.text == "Войти":
+        msg = bot.send_message(message.chat.id, "Для входа в аккаунт вам необходимо ввести Токен. Шпаргалка по получению токена доступна по ссылке ниже. Не бойтесь, мы не крадем ваши персональные данные.")
+        bot.send_message(message.chat.id, "https://yandex-music.readthedocs.io/en/main/token.html")
+        bot.register_next_step_handler(msg, auth2)
+
+    elif message.text == "Выйти":
+        bot.send_message(message.chat.id, "Вы успешно вышли из аккаунта.")
+        me.setTOKEN('')
+        client = Client().init()
 
     elif (message.text == "Мне нравится"):
         cmd_inline_url(message)
 
-    elif message.text == 'Музыка из плейлиста':
+    elif message.text == 'Музыка из плейлистов':
         my_playlists(message)
 
     elif message.text == "Поиск":
@@ -77,8 +85,11 @@ def bebra(message):
         bot.send_photo(message.chat.id,
                        photo='https://forum.valhalla-age.org/uploads/monthly_2020_04/CnCCKw3XYAEYEU_.jpg.336b77f8c4a034683c214c220f9e7073.jpg')
 
+def auth2(message):
+    me.setTOKEN(message.text)
+    client = Client(message.text).init()
+    bot.send_message(message.chat.id, "Вы успешно вошли в аккаунт!")
 
-me = MyPerson('AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo')
 def search2(message):
     q = me.search(message.text)
     bot.send_message(message.chat.id, q)

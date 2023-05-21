@@ -1,5 +1,6 @@
 from yandex_music import Client
-client=Client('AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo').init()
+TOKEN='AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
+client = Client().init()
 
 class Track():
     def __init__(self ,id,tr, title,author):
@@ -14,14 +15,17 @@ class Track():
     def getAuthor(self):
         return self.author
 
-
 class MyPerson():
     mytrack = []
     count=5
     page=1
     curr_playlist = ''
-    def __init__(self,TOKEN):
-        self.TOKEN=TOKEN
+    # def __init__(self,TOKEN):
+    #     self.TOKEN=TOKEN
+    #     self.client = Client(TOKEN).init()
+
+    def setTOKEN(self, TOKEN):
+        self.TOKEN = TOKEN
         self.client = Client(TOKEN).init()
 
     def setPlaylist(self, playId):
@@ -123,7 +127,6 @@ class MyPerson():
                 self.mytrack.append(Track(int(tracks[i].id), tracks[i], self.client.tracks(tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
-
 
 
 
