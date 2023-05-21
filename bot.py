@@ -111,9 +111,8 @@ def cmd_inline_url(message: types.Message):
 
     bot.send_message(message.chat.id, text="Список аудиозаписей", reply_markup=keyboard)
 
-
 @bot.callback_query_handler(func=lambda call: True)
-def my_favourites(call):
+def buttons_query_handler(call: CallbackQuery):
     if call.data[0] == 'i':
         print(type(call.data))
         audio_title = me.download(str(call.data[1:]))
@@ -131,7 +130,7 @@ def my_favourites(call):
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_pl_tr"),
-            types.InlineKeyboardButton(text="1", callback_data="curr_page_pl_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_pl_tr"),
             types.InlineKeyboardButton(text="->", callback_data="next_pl_tr")
         ]
         low_links = [
@@ -152,7 +151,7 @@ def my_favourites(call):
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_my"),
-            types.InlineKeyboardButton(text="1", callback_data="curr_page_my"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_my"),
             types.InlineKeyboardButton(text="->", callback_data="next_my")
         ]
         low_links = [
@@ -172,7 +171,7 @@ def my_favourites(call):
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_my"),
-            types.InlineKeyboardButton(text="1", callback_data="curr_page_my"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_my"),
             types.InlineKeyboardButton(text="->", callback_data="next_my")
         ]
         low_links = [
@@ -192,7 +191,7 @@ def my_favourites(call):
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_pl_tr"),
-            types.InlineKeyboardButton(text="1", callback_data="curr_page_pl_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_pl_tr"),
             types.InlineKeyboardButton(text="->", callback_data="next_pl_tr")
         ]
         low_links = [
@@ -213,7 +212,7 @@ def my_favourites(call):
         keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
         low_row = [
             types.InlineKeyboardButton(text="<-", callback_data="prev_pl_tr"),
-            types.InlineKeyboardButton(text="1", callback_data="curr_page_pl_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_pl_tr"),
             types.InlineKeyboardButton(text="->", callback_data="next_pl_tr")
         ]
         low_links = [
@@ -240,7 +239,7 @@ def my_playlists(message):
     keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
     low_row = [
         types.InlineKeyboardButton(text="<-", callback_data="prev_pl"),
-        types.InlineKeyboardButton(text="1", callback_data="curr_page_pl"),
+        types.InlineKeyboardButton(text=me.page, callback_data="curr_page_pl"),
         types.InlineKeyboardButton(text="->", callback_data="next_pl")
     ]
     low_links = [
@@ -251,10 +250,5 @@ def my_playlists(message):
     keyboard.row(*low_links)
 
     bot.send_message(message.chat.id, text="Список плейлистов", reply_markup=keyboard)
-
-# @bot.callback_query_handler(func=lambda call: True)
-# def tracks_in_playlist(call):
-#
-
 
 bot.polling()
