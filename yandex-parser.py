@@ -1,5 +1,5 @@
-from yandex_music import Client
-# client=Client(TOKEN).init()
+from yandex_music import await Client
+# client=await Client(TOKEN).init()
 # track=client.users_likes_tracks()[0]
 # track.fetch_track().download("askldjhl.mp3")
 class Track():
@@ -22,7 +22,7 @@ class MyPerson():
     page=1
     def __init__(self,TOKEN):
         self.TOKEN=TOKEN
-        self.client = Client(TOKEN).init()
+        self.client = await Client(TOKEN).init()
 
 
     def get_likes_tracks(self):

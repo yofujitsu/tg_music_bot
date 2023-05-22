@@ -1,9 +1,12 @@
-
+import setuptools
+import random
 import telebot
 from telebot import types
 from aiogram.types import *
-
-from yandex_music import Client
+import aiogram
+import requests
+from bs4 import BeautifulSoup as b
+from yandex_music import Client, Client
 from yandex_music.exceptions import UnauthorizedError
 
 from yandex_parser import MyPerson
@@ -20,8 +23,6 @@ me = MyPerson()
 
 @bot.message_handler(commands=['start'])
 def hello(message):
-    bot.send_message(message.chat.id,
-                     text="""Привет! Если хочешь ознакомиться с командами - жми menu. Хочешь узнать, что делает каждая команда - жми help. Отправь мне стикер)""")
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("menu")
     btn2 = types.KeyboardButton("help")
@@ -51,21 +52,14 @@ def send_menu(message):
     markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, back)
     bot.send_message(message.chat.id, text="меню", reply_markup=markup)
 
-@bot.message_handler(content_types=['text'])
-def bebra(message):
-    if (message.text == "menu"):
-        send_menu(message)
-
-    elif (message.text == "help"):
-        bot.send_message(message.chat.id, text="не могу помочь с этим.")
-
-    elif (message.text == "Что я могу?"):
-        bot.send_message(message.chat.id, text="пока не готово. соре.")
-
-    elif message.text == "Войти":
-        msg = bot.send_message(message.chat.id, "Для входа в аккаунт вам необходимо ввести Токен. Шпаргалка по получению токена доступна по ссылке ниже. Не бойтесь, мы не крадем ваши персональные данные.")
+@bot.message_handler(commands=['auth'])
+def auth(message):
+    if me.getTOKEN() == '':
+        msg = bot.send_message(message.chat.id,
+                               "Для входа в аккаунт вам необходимо ввести Токен. Шпаргалка по получению токена доступна по ссылке ниже. Вы должны прислать строку без кавычек! Не бойтесь, мы не крадем ваши персональные данные, токен используется лишь для доступа к музыкальному каталогу пользователя.")
         bot.send_message(message.chat.id, "https://yandex-music.readthedocs.io/en/main/token.html")
         bot.register_next_step_handler(msg, auth2)
+    else: bot.send_message(message.chat.id, "Вы уже вошли с свой аккаунт!")
 
 def auth2(message):
     try:
@@ -98,7 +92,7 @@ def search2(message):
         audio_title = me.download_by_link(str(message.text[-9:]))
         audio = open(audio_title, "rb")
         bot.send_audio(message.chat.id, audio)
-    elif "track" not in message.text:
+    elif message.text[:5] == "https" and "track" not in message.text:
         me.setAlbum(message.text[-9:])
         tracks = me.get_tracks_by_album()
         buttons = []
@@ -119,8 +113,58 @@ def search2(message):
         keyboard.row(*low_links)
         bot.send_message(message.chat.id, text="Список треков альбома", reply_markup=keyboard)
     elif "https" not in message.text:
-        q = me.search(message.text)
+        q = me.search_res(message.text)
         bot.send_message(message.chat.id, q)
+        q2 = me.search(message.text)
+        if q2[0] == "трек":
+            audio_title = me.download_by_link(q2[1].id)
+            audio = open(audio_title, "rb")
+            bot.send_audio(message.chat.id, audio)
+        elif q2[0] == "альбом":
+            me.setAlbum(q2[1].id)
+            tracks = me.get_tracks_by_album()
+            buttons = []
+            for i in range(len(tracks)):
+                buttons.append(types.InlineKeyboardButton(text=tracks[i].author + " " + tracks[i].title,
+                                                          callback_data='i' + str(tracks[i].id)))
+            keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+            low_row = [
+                types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+                types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+                types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+            ]
+            low_links = [
+                types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+                types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+            ]
+            keyboard.row(*low_row)
+            keyboard.row(*low_links)
+            bot.send_message(message.chat.id, text="Список треков альбома", reply_markup=keyboard)
+        elif q2[0] == "исполнитель":
+            me.setArtist(q2[1].id)
+            tracks = me.get_tracks_by_artist()
+            buttons = []
+            for i in range(len(tracks)):
+                buttons.append(types.InlineKeyboardButton(text=tracks[i].author + " " + tracks[i].title,
+                                                          callback_data='i' + str(tracks[i].id)))
+            keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+            low_row = [
+                types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+                types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+                types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+            ]
+            low_links = [
+                types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+                types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+            ]
+            keyboard.row(*low_row)
+            keyboard.row(*low_links)
+            bot.send_message(message.chat.id, text="Список лучших треков исполнителя", reply_markup=keyboard)
+        else: bot.send_message(message.chat.id, q)
+
+
+
+
 
 @bot.message_handler(commands=['my'])
 def cmd_inline_url(message: types.Message):
@@ -380,7 +424,7 @@ def my_albums(message):
     ]
     for i in range(len(al)):
         buttons.append(types.InlineKeyboardButton(text=al[i][0] + " - " + al[i][1],
-                                                  callback_data='A' + al[i][2]))
+                                                  callback_data='A' + str(al[i][2])))
     keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
     low_row = [
         types.InlineKeyboardButton(text="<-", callback_data="prev_al"),
