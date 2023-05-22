@@ -6,7 +6,7 @@ from aiogram.types import *
 import aiogram
 import requests
 from bs4 import BeautifulSoup as b
-from yandex_music import Client
+from yandex_music import Client, Client
 from yandex_music.exceptions import UnauthorizedError
 
 from yandex_parser import MyPerson
@@ -92,7 +92,7 @@ def search2(message):
         audio_title = me.download_by_link(str(message.text[-9:]))
         audio = open(audio_title, "rb")
         bot.send_audio(message.chat.id, audio)
-    elif "track" not in message.text:
+    elif message.text[:5] == "https" and "track" not in message.text:
         me.setAlbum(message.text[-9:])
         tracks = me.get_tracks_by_album()
         buttons = []
@@ -113,8 +113,58 @@ def search2(message):
         keyboard.row(*low_links)
         bot.send_message(message.chat.id, text="Список треков альбома", reply_markup=keyboard)
     elif "https" not in message.text:
-        q = me.search(message.text)
+        q = me.search_res(message.text)
         bot.send_message(message.chat.id, q)
+        q2 = me.search(message.text)
+        if q2[0] == "трек":
+            audio_title = me.download_by_link(q2[1].id)
+            audio = open(audio_title, "rb")
+            bot.send_audio(message.chat.id, audio)
+        elif q2[0] == "альбом":
+            me.setAlbum(q2[1].id)
+            tracks = me.get_tracks_by_album()
+            buttons = []
+            for i in range(len(tracks)):
+                buttons.append(types.InlineKeyboardButton(text=tracks[i].author + " " + tracks[i].title,
+                                                          callback_data='i' + str(tracks[i].id)))
+            keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+            low_row = [
+                types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+                types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+                types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+            ]
+            low_links = [
+                types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+                types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+            ]
+            keyboard.row(*low_row)
+            keyboard.row(*low_links)
+            bot.send_message(message.chat.id, text="Список треков альбома", reply_markup=keyboard)
+        elif q2[0] == "исполнитель":
+            me.setArtist(q2[1].id)
+            tracks = me.get_tracks_by_artist()
+            buttons = []
+            for i in range(len(tracks)):
+                buttons.append(types.InlineKeyboardButton(text=tracks[i].author + " " + tracks[i].title,
+                                                          callback_data='i' + str(tracks[i].id)))
+            keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+            low_row = [
+                types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+                types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+                types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+            ]
+            low_links = [
+                types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+                types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+            ]
+            keyboard.row(*low_row)
+            keyboard.row(*low_links)
+            bot.send_message(message.chat.id, text="Список лучших треков исполнителя", reply_markup=keyboard)
+        else: bot.send_message(message.chat.id, q)
+
+
+
+
 
 @bot.message_handler(commands=['my'])
 def cmd_inline_url(message: types.Message):
