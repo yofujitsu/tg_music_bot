@@ -17,17 +17,13 @@ class Track():
 
 class MyPerson():
     mytrack = []
-    album_tracks = []
     count=5
     page=1
     curr_playlist = ''
     curr_album = 0
-    TOKEN=""
-    # def __init__(self,TOKEN):
-    #     self.TOKEN=TOKEN
-    #     self.client = Client(TOKEN).init()
-    def getTOKEN(self):
-        return self.TOKEN
+    TOKEN = ''
+    def __init__(self):
+        self.client = Client().init()
 
     def setTOKEN(self, TOKEN):
         self.TOKEN = TOKEN
@@ -38,6 +34,9 @@ class MyPerson():
 
     def setAlbum(self, albumId):
         self.curr_album = albumId
+
+    def getTOKEN(self):
+        return self.TOKEN
 
     type_to_name = {
         'track': 'трек',
@@ -61,12 +60,19 @@ class MyPerson():
             print(0+self.count*self.page-5,self.count*self.page, self.page)
             self.mytrack.append(Track(int(tracks[i].id),tracks[i],self.client.tracks(tracks[i].id)[0].title,", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
+
     def download(self,id):
         id = int(id)
+        title = ''
         for i in self.mytrack:
+            print(i.id, id, type(i.id), type(id))
             if (i.id==id):
                 print("win")
-                i.tr.fetch_track().download(i.author+" - "+i.title+".mp3")
+                print(type(i))
+                print(id)
+                try:
+                    i.tr.fetch_track().download(i.author+" - "+i.title+".mp3")
+                except AttributeError: i.tr.download(i.author+" - "+i.title+".mp3")
                 title = i.author+" - "+i.title+".mp3"
                 break
         return title
@@ -118,12 +124,14 @@ class MyPerson():
         for i in self.client.usersPlaylistsList():
             res.append([i.title,i.playlistId.split(":")[1]])
         return res
+
     def get_tracks_by_playlist(self,page=0):
         if page==0:
             self.page=1
         else:
             self.page+=page
         tracks=self.client.usersPlaylists(self.curr_playlist).tracks
+        for i in tracks: print(type(i))
         self.mytrack = []
         for i in range(0 + self.count * self.page - 5, self.count * self.page):
             if i<len(tracks):
@@ -131,37 +139,67 @@ class MyPerson():
                 self.mytrack.append(Track(int(tracks[i].id), tracks[i], self.client.tracks(tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
+
     def get_albums(self):
         res = []
         albums = self.client.users_likes_albums()
         for i in albums:
             res.append([str(i.album.artists_name())[2:-2], i.album.title, i.album.id])
         return res
+
     def get_tracks_by_album(self, page=0):
         if page==0:
             self.page=1
         else:
             self.page+=page
         album=self.client.albums_with_tracks(self.curr_album)
-        self.album_tracks = []
+        album_tracks = []
+        print(album.volumes)
         for i, volume in enumerate(album.volumes):
             if len(album.volumes) > 1:
-                self.album_tracks.append(f'💿 Диск {i + 1}')
-            self.album_tracks += volume
+                album_tracks.append(f'💿 Диск {i + 1}')
+            album_tracks += volume
         self.mytrack = []
-        for track in self.album_tracks:
+        for track in album_tracks:
             artists = ''
             if track.artists:
                 artists = ' - ' + ', '.join(artist.name for artist in track.artists)
-                # print(track.title + artists)
-        for i in self.album_tracks:
-            print(i.artists_name(), i.title, i.id)
+                print(track.title + artists)
+        print(len(album_tracks))
+        for i in album_tracks: print(type(i))
         for i in range(0 + self.count * self.page - 5, self.count * self.page):
-            if i<len(self.album_tracks):
+            if i<len(album_tracks):
                 # print(0 + self.count * self.page - 5, self.count * self.page, self.page)
-                self.mytrack.append(Track(int(self.album_tracks[i].id), self.album_tracks[i], self.client.tracks(self.album_tracks[i].id)[0].title,
-                                          ", ".join(self.client.tracks(self.album_tracks[i].id)[0].artists_name())))
+                self.mytrack.append(Track(int(album_tracks[i].id), album_tracks[i], self.client.tracks(album_tracks[i].id)[0].title,
+                                          ", ".join(self.client.tracks(album_tracks[i].id)[0].artists_name())))
         return self.mytrack
+    def add_to_favs(self, id):
+        return self.client.users_likes_tracks_add(id)
+
+    def download_by_link(self, id):
+        self.mytrack = []
+        id = int(id)
+        title = ''
+        track = self.client.tracks(id)
+        self.mytrack.append(
+            Track(int(track[0].id), track[0], track[0].title,
+                  ", ".join(track[0].artists_name())))
+        for i in self.mytrack:
+            print(i.id, id, type(i.id), type(id))
+            if (i.id == id):
+                print("win")
+                print(type(i))
+                print(id)
+                try:
+                    i.tr.fetch_track().download(i.author + " - " + i.title + ".mp3")
+                except AttributeError:
+                    i.tr.download(i.author + " - " + i.title + ".mp3")
+                title = i.author + " - " + i.title + ".mp3"
+                break
+        return title
+
+
+
 
 # '''Сюда нужно передать токен'''
 # person=MyPerson()
@@ -174,8 +212,10 @@ class MyPerson():
 # print(me.get_albums())
 # print("----------")
 # me.get_tracks_by_album()
-# for i in range(len(me.album_tracks)):
-#     print(me.album_tracks[i].id, me.album_tracks[i].title, me.album_tracks[i].artists_name())
+# me.add_to_favs(59916171)
+# print()
+# for i in range(len(me.mytrack)):
+#     print(me.mytrack[i].id, me.mytrack[i].title, me.mytrack[i].author)
 
 
 
