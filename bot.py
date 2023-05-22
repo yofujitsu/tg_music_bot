@@ -49,44 +49,45 @@ def send_menu(message):
 
 @bot.message_handler(content_types=['text'])
 def bebra(message):
-    if (message.text == "menu"):
-        send_menu(message)
+    if me.getTOKEN() =="":
+        if (message.text == "menu"):
+            send_menu(message)
 
-    elif (message.text == "help"):
-        bot.send_message(message.chat.id, text="не могу помочь с этим.")
+        elif (message.text == "help"):
+            bot.send_message(message.chat.id, text="не могу помочь с этим.")
 
-    elif (message.text == "Что я могу?"):
-        bot.send_message(message.chat.id, text="пока не готово. соре.")
+        elif (message.text == "Что я могу?"):
+            bot.send_message(message.chat.id, text="пока не готово. соре.")
 
-    elif message.text == "Войти":
-        msg = bot.send_message(message.chat.id, "Для входа в аккаунт вам необходимо ввести Токен. Шпаргалка по получению токена доступна по ссылке ниже. Не бойтесь, мы не крадем ваши персональные данные.")
-        bot.send_message(message.chat.id, "https://yandex-music.readthedocs.io/en/main/token.html")
-        bot.register_next_step_handler(msg, auth2)
-
-    elif message.text == "Выйти":
-        bot.send_message(message.chat.id, "Вы успешно вышли из аккаунта.")
-        me.setTOKEN('')
-        client = Client().init()
-
-    elif (message.text == "Мне нравится"):
-        cmd_inline_url(message)
-
-    elif message.text == 'Музыка из моих плейлистов':
-        my_playlists(message)
-
-    elif message.text == "Муызка из моих альбомов":
-        my_albums(message)
-
-    elif message.text == "Поиск":
-        msg = bot.send_message(message.chat.id, "Напишите, что хотите найти:")
-        bot.register_next_step_handler(msg, search2)
-
-    elif (message.text == "Вернуться в главное меню"):
-        bot.send_message(message.chat.id, text="waltuh... -_-", reply_markup=None)
-        hello(message)
+        elif message.text == "Войти":
+            msg = bot.send_message(message.chat.id, "Для входа в аккаунт вам необходимо ввести Токен. Шпаргалка по получению токена доступна по ссылке ниже. Не бойтесь, мы не крадем ваши персональные данные.")
+            bot.send_message(message.chat.id, "https://yandex-music.readthedocs.io/en/main/token.html")
+            bot.register_next_step_handler(msg, auth2)
+        else:
+            bot.send_message(message.chat.id, "Функция недоступна, пока ТЫ не авторизуешься.")
     else:
-        bot.send_photo(message.chat.id,
-                       photo='https://forum.valhalla-age.org/uploads/monthly_2020_04/CnCCKw3XYAEYEU_.jpg.336b77f8c4a034683c214c220f9e7073.jpg')
+        if (message.text == "Мне нравится"):
+            cmd_inline_url(message)
+
+        elif message.text == "Выйти":
+            bot.send_message(message.chat.id, "Вы успешно вышли из аккаунта.")
+            me.setTOKEN('')
+            client = Client().init()
+        elif message.text == 'Музыка из моих плейлистов':
+            my_playlists(message)
+
+        elif message.text == "Музыка из моих альбомов":
+            my_albums(message)
+
+        elif message.text == "Поиск":
+            msg = bot.send_message(message.chat.id, "Напишите, что хотите найти:")
+            bot.register_next_step_handler(msg, search2)
+
+        elif (message.text == "Вернуться в главное меню"):
+            bot.send_message(message.chat.id, text="waltuh... -_-", reply_markup=None)
+            hello(message)
+        else:
+            bot.send_message(message.chat.id, text="Не понимаю о чем вы.")
 
 def auth2(message):
     me.setTOKEN(message.text)
@@ -256,7 +257,7 @@ def buttons_query_handler(call: CallbackQuery):
         keyboard.row(*low_row)
         keyboard.row(*low_links)
         bot.send_message(call.message.chat.id, text="Список аудиозаписей из плейлиста", reply_markup=keyboard)
-    if call.data == "next_фl_tr":
+    if call.data == "next_al_tr":
         # me.page+=1
         tracks_titles = me.get_tracks_by_album(1)
         buttons = []
@@ -337,7 +338,7 @@ def my_albums(message):
     ]
     for i in range(len(al)):
         buttons.append(types.InlineKeyboardButton(text=al[i][0] + " - " + al[i][1],
-                                                  callback_data='A' + al[i][2]))
+                                                  callback_data='A' + str(al[i][2])))
     keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
     low_row = [
         types.InlineKeyboardButton(text="<-", callback_data="prev_al"),
