@@ -83,9 +83,38 @@ def unauth(message):
         send_menu(message)
 
 @bot.message_handler(commands=['s'])
+def search(message):
+    msg = bot.send_message(message.chat.id, "Напишите, какой альбом или трек вы хотите найти, или отправьте ссылку:")
+    bot.register_next_step_handler(msg, search2)
+
 def search2(message):
-    q = me.search(message.text)
-    bot.send_message(message.chat.id, q)
+    if message.text[:5] == "https" and "track" in message.text:
+        audio_title = me.download_by_link(str(message.text[-9:]))
+        audio = open(audio_title, "rb")
+        bot.send_audio(message.chat.id, audio)
+    elif "track" not in message.text:
+        me.setAlbum(message.text[-9:])
+        tracks = me.get_tracks_by_album()
+        buttons = []
+        for i in range(len(tracks)):
+            buttons.append(types.InlineKeyboardButton(text=tracks[i].author + " " + tracks[i].title,
+                                                      callback_data='i' + str(tracks[i].id)))
+        keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+        low_row = [
+            types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+            types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+        ]
+        low_links = [
+            types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+            types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+        ]
+        keyboard.row(*low_row)
+        keyboard.row(*low_links)
+        bot.send_message(message.chat.id, text="Список треков альбома", reply_markup=keyboard)
+    elif "https" not in message.text:
+        q = me.search(message.text)
+        bot.send_message(message.chat.id, q)
 
 @bot.message_handler(commands=['my'])
 def cmd_inline_url(message: types.Message):
@@ -121,7 +150,6 @@ def buttons_query_handler(call: CallbackQuery):
         print(type(call.data))
         audio_title = me.download(str(call.data[1:]))
         lastId = call.data[1:]
-        print(lastId)
         audio = open(audio_title, "rb")
         # bot.send_message(call.message.chat.id, call.data)
         bot.send_audio(call.message.chat.id, audio)
@@ -422,7 +450,7 @@ def bebra(message):
             my_albums(message)
 
         elif message.text == "Поиск":
-            msg = bot.send_message(message.chat.id, "Напишите, что хотите найти:")
-            bot.register_next_step_handler(msg, search2)
+            search(message)
 
-bot.polling()
+
+bot.polling(none_stop=True)

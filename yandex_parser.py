@@ -63,7 +63,9 @@ class MyPerson():
 
     def download(self,id):
         id = int(id)
+        title = ''
         for i in self.mytrack:
+            print(i.id, id, type(i.id), type(id))
             if (i.id==id):
                 print("win")
                 print(type(i))
@@ -173,7 +175,28 @@ class MyPerson():
         return self.mytrack
     def add_to_favs(self, id):
         return self.client.users_likes_tracks_add(id)
-        # if self.client.tracks.track(id)
+
+    def download_by_link(self, id):
+        self.mytrack = []
+        id = int(id)
+        title = ''
+        track = self.client.tracks(id)
+        self.mytrack.append(
+            Track(int(track[0].id), track[0], track[0].title,
+                  ", ".join(track[0].artists_name())))
+        for i in self.mytrack:
+            print(i.id, id, type(i.id), type(id))
+            if (i.id == id):
+                print("win")
+                print(type(i))
+                print(id)
+                try:
+                    i.tr.fetch_track().download(i.author + " - " + i.title + ".mp3")
+                except AttributeError:
+                    i.tr.download(i.author + " - " + i.title + ".mp3")
+                title = i.author + " - " + i.title + ".mp3"
+                break
+        return title
 
 
 
@@ -184,15 +207,15 @@ class MyPerson():
 # for i in range(len(person.mytrack)):
 #     print(person.mytrack[i].id,person.mytrack[i].title,person.mytrack[i].author)
 # person.download(person.mytrack[0].id)
-me = MyPerson()
-me.setTOKEN(TOKEN)
-print(me.get_albums())
-print("----------")
-me.get_tracks_by_album()
-me.add_to_favs(59916171)
-print()
-for i in range(len(me.mytrack)):
-    print(me.mytrack[i].id, me.mytrack[i].title, me.mytrack[i].author)
+# me = MyPerson()
+# me.setTOKEN(TOKEN)
+# print(me.get_albums())
+# print("----------")
+# me.get_tracks_by_album()
+# me.add_to_favs(59916171)
+# print()
+# for i in range(len(me.mytrack)):
+#     print(me.mytrack[i].id, me.mytrack[i].title, me.mytrack[i].author)
 
 
 
