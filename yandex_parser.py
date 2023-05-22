@@ -22,9 +22,12 @@ class MyPerson():
     page=1
     curr_playlist = ''
     curr_album = 0
+    TOKEN=""
     # def __init__(self,TOKEN):
     #     self.TOKEN=TOKEN
     #     self.client = Client(TOKEN).init()
+    def getTOKEN(self):
+        return self.TOKEN
 
     def setTOKEN(self, TOKEN):
         self.TOKEN = TOKEN
@@ -166,13 +169,13 @@ class MyPerson():
 # for i in range(len(person.mytrack)):
 #     print(person.mytrack[i].id,person.mytrack[i].title,person.mytrack[i].author)
 # person.download(person.mytrack[0].id)
-me = MyPerson()
-me.setTOKEN(TOKEN)
-print(me.get_albums())
-print("----------")
-me.get_tracks_by_album()
-for i in range(len(me.album_tracks)):
-    print(me.album_tracks[i].id, me.album_tracks[i].title, me.album_tracks[i].artists_name())
+# me = MyPerson()
+# me.setTOKEN(TOKEN)
+# print(me.get_albums())
+# print("----------")
+# me.get_tracks_by_album()
+# for i in range(len(me.album_tracks)):
+#     print(me.album_tracks[i].id, me.album_tracks[i].title, me.album_tracks[i].artists_name())
 
 
 
