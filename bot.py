@@ -71,8 +71,11 @@ def bebra(message):
     elif (message.text == "Мне нравится"):
         cmd_inline_url(message)
 
-    elif message.text == 'Музыка из плейлистов':
+    elif message.text == 'Музыка из моих плейлистов':
         my_playlists(message)
+
+    elif message.text == "Муызка из моих альбомов":
+        my_albums(message)
 
     elif message.text == "Поиск":
         msg = bot.send_message(message.chat.id, "Напишите, что хотите найти:")
@@ -150,8 +153,28 @@ def buttons_query_handler(call: CallbackQuery):
         ]
         keyboard.row(*low_row)
         keyboard.row(*low_links)
-
         bot.send_message(call.message.chat.id, text="Список треков в плейлисте", reply_markup=keyboard)
+    if call.data[0] == "A":
+        me.setAlbum(call.data[1:])
+        print(call.data[1:])
+        tracks = me.get_tracks_by_album()
+        buttons = []
+        for i in range(len(tracks)):
+            buttons.append(types.InlineKeyboardButton(text=tracks[i].author + " " + tracks[i].title,
+                                                      callback_data='i' + str(tracks[i].id)))
+        keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+        low_row = [
+            types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+            types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+        ]
+        low_links = [
+            types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+            types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+        ]
+        keyboard.row(*low_row)
+        keyboard.row(*low_links)
+        bot.send_message(call.message.chat.id, text="Список треков альбома", reply_markup=keyboard)
     if call.data == "next_my":
         # me.page+=1
         tracks_titles = me.get_likes_tracks(1)
@@ -233,6 +256,46 @@ def buttons_query_handler(call: CallbackQuery):
         keyboard.row(*low_row)
         keyboard.row(*low_links)
         bot.send_message(call.message.chat.id, text="Список аудиозаписей из плейлиста", reply_markup=keyboard)
+    if call.data == "next_фl_tr":
+        # me.page+=1
+        tracks_titles = me.get_tracks_by_album(1)
+        buttons = []
+        for i in range(len(tracks_titles)):
+            buttons.append(types.InlineKeyboardButton(text=tracks_titles[i].author + " " + tracks_titles[i].title,
+                                                      callback_data='i' + str(tracks_titles[i].id)))
+        keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+        low_row = [
+            types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+            types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+        ]
+        low_links = [
+            types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+            types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+        ]
+        keyboard.row(*low_row)
+        keyboard.row(*low_links)
+        bot.send_message(call.message.chat.id, text="Список аудиозаписей из альбома", reply_markup=keyboard)
+    if call.data == "prev_al_tr" and me.page>1:
+        # me.page-=1
+        tracks_titles = me.get_tracks_by_album(-1)
+        buttons = []
+        for i in range(len(tracks_titles)):
+            buttons.append(types.InlineKeyboardButton(text=tracks_titles[i].author + " " + tracks_titles[i].title,
+                                                      callback_data='i' + str(tracks_titles[i].id)))
+        keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+        low_row = [
+            types.InlineKeyboardButton(text="<-", callback_data="prev_al_tr"),
+            types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al_tr"),
+            types.InlineKeyboardButton(text="->", callback_data="next_al_tr")
+        ]
+        low_links = [
+            types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+            types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+        ]
+        keyboard.row(*low_row)
+        keyboard.row(*low_links)
+        bot.send_message(call.message.chat.id, text="Список аудиозаписей из альбома", reply_markup=keyboard)
 
 @bot.message_handler(commands=['ps'])
 def my_playlists(message):
@@ -261,5 +324,34 @@ def my_playlists(message):
     keyboard.row(*low_links)
 
     bot.send_message(message.chat.id, text="Список плейлистов", reply_markup=keyboard)
+
+@bot.message_handler(commands=['a'])
+def my_albums(message):
+    al = me.get_albums()
+    buttons = [
+        # types.InlineKeyboardButton(text=track.titles[0], callback_data="track_1"),
+        # types.InlineKeyboardButton(text="track 2", callback_data="track_2"),
+        # types.InlineKeyboardButton(text="track 3", callback_data="track_3"),
+        # types.InlineKeyboardButton(text="track 4", callback_data="track_4"),
+        # types.InlineKeyboardButton(text="track 5", callback_data="track_5")
+    ]
+    for i in range(len(al)):
+        buttons.append(types.InlineKeyboardButton(text=al[i][0] + " - " + al[i][1],
+                                                  callback_data='A' + al[i][2]))
+    keyboard = types.InlineKeyboardMarkup(row_width=1).add(*buttons)
+    low_row = [
+        types.InlineKeyboardButton(text="<-", callback_data="prev_al"),
+        types.InlineKeyboardButton(text=me.page, callback_data="curr_page_al"),
+        types.InlineKeyboardButton(text="->", callback_data="next_al")
+    ]
+    low_links = [
+        types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
+        types.InlineKeyboardButton(text="creator 2", url="https://github.com/Ulquiorrashif"),
+    ]
+    keyboard.row(*low_row)
+    keyboard.row(*low_links)
+
+    bot.send_message(message.chat.id, text="Список добавленных альбомов", reply_markup=keyboard)
+
 
 bot.polling()

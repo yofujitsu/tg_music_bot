@@ -1,6 +1,6 @@
 from yandex_music import Client
 TOKEN='AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
-client = Client().init()
+client = Client(TOKEN).init()
 
 class Track():
     def __init__(self ,id,tr, title,author):
@@ -17,9 +17,11 @@ class Track():
 
 class MyPerson():
     mytrack = []
+    album_tracks = []
     count=5
     page=1
     curr_playlist = ''
+    curr_album = 0
     # def __init__(self,TOKEN):
     #     self.TOKEN=TOKEN
     #     self.client = Client(TOKEN).init()
@@ -30,6 +32,9 @@ class MyPerson():
 
     def setPlaylist(self, playId):
         self.curr_playlist = playId
+
+    def setAlbum(self, albumId):
+        self.curr_album = albumId
 
     type_to_name = {
         'track': 'трек',
@@ -105,10 +110,6 @@ class MyPerson():
         text.append('')
         return '\n'.join(text)
 
-    def test(self):
-        print(self.client.usersPlaylistsList()[0].playlistId)
-        print(self.client.usersPlaylists(1006).tracks[1].track.title)
-
     def get_playlists(self):
         res=[]
         for i in self.client.usersPlaylistsList():
@@ -127,8 +128,37 @@ class MyPerson():
                 self.mytrack.append(Track(int(tracks[i].id), tracks[i], self.client.tracks(tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
-
-
+    def get_albums(self):
+        res = []
+        albums = self.client.users_likes_albums()
+        for i in albums:
+            res.append([str(i.album.artists_name())[2:-2], i.album.title, i.album.id])
+        return res
+    def get_tracks_by_album(self, page=0):
+        if page==0:
+            self.page=1
+        else:
+            self.page+=page
+        album=self.client.albums_with_tracks(self.curr_album)
+        self.album_tracks = []
+        for i, volume in enumerate(album.volumes):
+            if len(album.volumes) > 1:
+                self.album_tracks.append(f'💿 Диск {i + 1}')
+            self.album_tracks += volume
+        self.mytrack = []
+        for track in self.album_tracks:
+            artists = ''
+            if track.artists:
+                artists = ' - ' + ', '.join(artist.name for artist in track.artists)
+                # print(track.title + artists)
+        for i in self.album_tracks:
+            print(i.artists_name(), i.title, i.id)
+        for i in range(0 + self.count * self.page - 5, self.count * self.page):
+            if i<len(self.album_tracks):
+                # print(0 + self.count * self.page - 5, self.count * self.page, self.page)
+                self.mytrack.append(Track(int(self.album_tracks[i].id), self.album_tracks[i], self.client.tracks(self.album_tracks[i].id)[0].title,
+                                          ", ".join(self.client.tracks(self.album_tracks[i].id)[0].artists_name())))
+        return self.mytrack
 
 # '''Сюда нужно передать токен'''
 # person=MyPerson()
@@ -136,8 +166,13 @@ class MyPerson():
 # for i in range(len(person.mytrack)):
 #     print(person.mytrack[i].id,person.mytrack[i].title,person.mytrack[i].author)
 # person.download(person.mytrack[0].id)
-
-
+me = MyPerson()
+me.setTOKEN(TOKEN)
+print(me.get_albums())
+print("----------")
+me.get_tracks_by_album()
+for i in range(len(me.album_tracks)):
+    print(me.album_tracks[i].id, me.album_tracks[i].title, me.album_tracks[i].artists_name())
 
 
 
