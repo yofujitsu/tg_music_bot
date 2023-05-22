@@ -67,6 +67,7 @@ class MyPerson():
             if (i.id==id):
                 print("win")
                 print(type(i))
+                print(id)
                 try:
                     i.tr.fetch_track().download(i.author+" - "+i.title+".mp3")
                 except AttributeError: i.tr.download(i.author+" - "+i.title+".mp3")
@@ -170,6 +171,12 @@ class MyPerson():
                 self.mytrack.append(Track(int(album_tracks[i].id), album_tracks[i], self.client.tracks(album_tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(album_tracks[i].id)[0].artists_name())))
         return self.mytrack
+    def add_to_favs(self, id):
+        return self.client.users_likes_tracks_add(id)
+        # if self.client.tracks.track(id)
+
+
+
 
 # '''Сюда нужно передать токен'''
 # person=MyPerson()
@@ -182,6 +189,8 @@ me.setTOKEN(TOKEN)
 print(me.get_albums())
 print("----------")
 me.get_tracks_by_album()
+me.add_to_favs(59916171)
+print()
 for i in range(len(me.mytrack)):
     print(me.mytrack[i].id, me.mytrack[i].title, me.mytrack[i].author)
 
