@@ -1,11 +1,8 @@
-import setuptools
-import random
+
 import telebot
 from telebot import types
 from aiogram.types import *
-import aiogram
-import requests
-from bs4 import BeautifulSoup as b
+
 from yandex_music import Client, Client
 from yandex_music.exceptions import UnauthorizedError
 
