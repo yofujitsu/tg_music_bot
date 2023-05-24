@@ -8,6 +8,8 @@ from yandex_music.exceptions import UnauthorizedError
 
 from yandex_parser import MyPerson
 
+#тест
+
 client = Client().init()
 #'y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60'
 #'AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
