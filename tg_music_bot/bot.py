@@ -4,16 +4,12 @@ import telebot
 from telebot import types
 from aiogram.types import *
 import aiogram
-import requests
-from bs4 import BeautifulSoup as b
 from yandex_music import Client, Client
 from yandex_music.exceptions import UnauthorizedError
 
 from yandex_parser import MyPerson
 
 client = Client().init()
-#'y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60'
-#'AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
 API_TOKEN = "5952876513:AAEG1jg7AiXYmPPx9U5_FraCq00HYEztkwE"
 lastId = 0
 

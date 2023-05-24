@@ -1,6 +1,5 @@
 from yandex_music import Client
-TOKEN='AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
-client = Client(TOKEN).init()
+client = Client().init()
 
 class Track():
     def __init__(self ,id,tr, title,author):
@@ -261,50 +260,4 @@ class MyPerson():
                 self.mytrack.append(Track(int(tracks[i].id), tracks[i], self.client.tracks(tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
-
-
-
-
-
-# '''Сюда нужно передать токен'''
-# person=MyPerson()
-# person.get_lickes_tracks()
-# for i in range(len(person.mytrack)):
-#     print(person.mytrack[i].id,person.mytrack[i].title,person.mytrack[i].author)
-# person.download(person.mytrack[0].id)
-# me = MyPerson()
-# me.setTOKEN(TOKEN)
-# print(me.get_albums())
-# print("----------")
-# me.get_tracks_by_album()
-# me.add_to_favs(59916171)
-# print()
-# for i in range(len(me.mytrack)):
-#     print(me.mytrack[i].id, me.mytrack[i].title, me.mytrack[i].author)
-
-
-
-
-# Track={
-#     "tr",
-#     "title",
-#     "author"
-# }
-#
-# track=client.users_likes_tracks()[0]
-# print(client.tracks(track.id)[0].title)
-# person=MyPerson('AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo')
-# print(person.get_lickes_tracks()[0].author)
-# MyPerson.page=3
-# MyPerson.count=5
-# person.test()
-# list=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-# for i in range(0+MyPerson.count*MyPerson.page-5,MyPerson.count*MyPerson.page):
-#     print(list[i])
-
-# MyPerson.page=3
-# MyPerson.count=5
-# list=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-# for i in range(0+MyPerson.count*MyPerson.page-5,MyPerson.count*MyPerson.page):
-#     print(list[i])
 
