@@ -9,6 +9,8 @@ from yandex_music.exceptions import UnauthorizedError
 
 from yandex_parser import MyPerson
 
+#тест
+
 client = Client().init()
 API_TOKEN = "5952876513:AAEG1jg7AiXYmPPx9U5_FraCq00HYEztkwE"
 lastId = 0
