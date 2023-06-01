@@ -3,14 +3,14 @@ import telebot
 from telebot import types
 from aiogram.types import *
 
-from yandex_music import Client, Client
+from yandex_music import ClientAsync, Client
 from yandex_music.exceptions import UnauthorizedError
 
 from yandex_parser import MyPerson
 
-#тест
 
-client = Client().init()
+# client = ClientAsync().init()
+
 #'y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60'
 #'AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
 API_TOKEN = "5952876513:AAEG1jg7AiXYmPPx9U5_FraCq00HYEztkwE"
@@ -59,16 +59,15 @@ def auth(message):
         bot.send_message(message.chat.id, "https://yandex-music.readthedocs.io/en/main/token.html")
         bot.register_next_step_handler(msg, auth2)
     else: bot.send_message(message.chat.id, "Вы уже вошли с свой аккаунт!")
-
-def auth2(message):
+async def auth2(message):
     try:
-        me.setTOKEN(message.text)
-        client = Client(message.text).init()
+        await me.setTOKEN(message.text)
+        # client = Client(message.text).init()
         bot.send_message(message.chat.id, "Вы успешно вошли в аккаунт!")
         send_menu(message)
     except UnauthorizedError or UnicodeEncodeError:
-        me.setTOKEN('')
-        client = Client().init()
+        await me.setTOKEN('')
+        # client = Client().init()
         bot.send_message(message.chat.id, "Вы ввели невалидный токен. Внимательно прочитайте мануал. Пишите /auth для повторной попытки.")
 
 @bot.message_handler(commands=['exit'])
@@ -78,7 +77,7 @@ def unauth(message):
     else:
         bot.send_message(message.chat.id, "Вы успешно вышли из аккаунта.")
         me.setTOKEN('')
-        client = Client().init()
+        # client = Client().init()
         send_menu(message)
 
 @bot.message_handler(commands=['s'])

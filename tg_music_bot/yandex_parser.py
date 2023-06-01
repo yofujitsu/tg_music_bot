@@ -1,6 +1,6 @@
-from yandex_music import Client
+from yandex_music import ClientAsync,Client
 TOKEN='AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
-client = Client(TOKEN).init()
+# client = ClientAsync(TOKEN).init()
 
 class Track():
     def __init__(self ,id,tr, title,author):
@@ -24,11 +24,15 @@ class MyPerson():
     curr_artist = ''
     TOKEN = ''
     def __init__(self):
-        self.client = Client().init()
+        self.client:ClientAsync
+        print("")
 
-    def setTOKEN(self, TOKEN):
+    async def setTOKEN(self, TOKEN):
         self.TOKEN = TOKEN
-        self.client = Client(TOKEN).init()
+        # self.client = ClientAsync(TOKEN).init()
+        self.client = ClientAsync(TOKEN)
+        await self.client.init()
+        print(type(self.client))
 
     def setPlaylist(self, playId):
         self.curr_playlist = playId
@@ -59,10 +63,15 @@ class MyPerson():
         else:
             self.page+=page
         self.mytrack = []
-        tracks = self.client.users_likes_tracks()
+        tracks =  self.client.users_likes_tracks()
+        print(tracks)
         for i in range(0+self.count*self.page-5,self.count*self.page):
             print(0+self.count*self.page-5,self.count*self.page, self.page)
-            self.mytrack.append(Track(int(tracks[i].id),tracks[i],self.client.tracks(tracks[i].id)[0].title,", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
+            self.mytrack.append(Track(
+                int(tracks[i].id),
+                                      tracks[i],
+                self.client.tracks(tracks[i].id)[0].title,
+                ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
 
     def download(self,id):
@@ -82,7 +91,7 @@ class MyPerson():
         return title
 
     def search(self, query):
-        search_result = client.search(query)
+        search_result = self.client.search(query)
         text = [f'Результаты по запросу "{query}":', '']
         best_result_text = ''
         if search_result.best:
@@ -124,7 +133,7 @@ class MyPerson():
         return [self.type_to_name.get(type_), best]
 
     def search_res(self, query):
-        search_result = client.search(query)
+        search_result = self.client.search(query)
         text = [f'Результаты по запросу "{query}":', '']
         best_result_text = ''
         if search_result.best:
