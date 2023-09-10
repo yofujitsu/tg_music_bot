@@ -5,4 +5,3 @@ setup(
     version='1.0',
     packages=['tg_music_bot'],
 )
-sldkfl;sdkf;l

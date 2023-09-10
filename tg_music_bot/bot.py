@@ -1,16 +1,18 @@
-
+import setuptools
+import random
 import telebot
 from telebot import types
 from aiogram.types import *
-
-from yandex_music import ClientAsync, Client
+import aiogram
+import requests
+from bs4 import BeautifulSoup as b
+from yandex_music import Client, Client
 from yandex_music.exceptions import UnauthorizedError
 
-from yandex_parser import MyPerson
 
+from yandex_parser import MyAsyncPerson, MyPerson
 
-# client = ClientAsync().init()
-
+client = Client().init()
 #'y0_AgAAAAA-m1eKAAG8XgAAAADjdu60-k8-pH7FQ2u9v4GHmaRAFx_JP60'
 #'AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
 API_TOKEN = "5952876513:AAEG1jg7AiXYmPPx9U5_FraCq00HYEztkwE"
@@ -19,6 +21,7 @@ lastId = 0
 bot = telebot.TeleBot(API_TOKEN)
 
 me = MyPerson()
+# me = MyAsyncPerson()
 
 @bot.message_handler(commands=['start'])
 def hello(message):
@@ -57,8 +60,10 @@ def auth(message):
         msg = bot.send_message(message.chat.id,
                                "Для входа в аккаунт вам необходимо ввести Токен. Шпаргалка по получению токена доступна по ссылке ниже. Вы должны прислать строку без кавычек! Не бойтесь, мы не крадем ваши персональные данные, токен используется лишь для доступа к музыкальному каталогу пользователя.")
         bot.send_message(message.chat.id, "https://yandex-music.readthedocs.io/en/main/token.html")
-        bot.register_next_step_handler(msg, auth2)
+        # bot.register_next_step_handler(msg,  auth2)
     else: bot.send_message(message.chat.id, "Вы уже вошли с свой аккаунт!")
+def sloi(msg):
+    bot.register_next_step_handler(msg, auth2)
 async def auth2(message):
     try:
         await me.setTOKEN(message.text)
@@ -71,13 +76,13 @@ async def auth2(message):
         bot.send_message(message.chat.id, "Вы ввели невалидный токен. Внимательно прочитайте мануал. Пишите /auth для повторной попытки.")
 
 @bot.message_handler(commands=['exit'])
-def unauth(message):
+async def unauth(message):
     if me.getTOKEN() == '':
         bot.send_message(message.chat.id, "Так вы и не входили, вы чего?.")
     else:
         bot.send_message(message.chat.id, "Вы успешно вышли из аккаунта.")
-        me.setTOKEN('')
-        # client = Client().init()
+        await me.setTOKEN('')
+        client = Client().init()
         send_menu(message)
 
 @bot.message_handler(commands=['s'])

@@ -1,6 +1,6 @@
-from yandex_music import ClientAsync,Client
+from yandex_music import Client
 TOKEN='AQAAAAASg-EiAAG8Xth12jSrvkhtqzxHtyTafzo'
-# client = ClientAsync(TOKEN).init()
+client = Client(TOKEN).init()
 
 class Track():
     def __init__(self ,id,tr, title,author):
@@ -24,15 +24,12 @@ class MyPerson():
     curr_artist = ''
     TOKEN = ''
     def __init__(self):
-        self.client:ClientAsync
-        print("")
+        self.client = Client().init()
 
-    async def setTOKEN(self, TOKEN):
+
+    def setTOKEN(self, TOKEN):
         self.TOKEN = TOKEN
-        # self.client = ClientAsync(TOKEN).init()
-        self.client = ClientAsync(TOKEN)
-        await self.client.init()
-        print(type(self.client))
+        self.client = Client(TOKEN).init()
 
     def setPlaylist(self, playId):
         self.curr_playlist = playId
@@ -63,15 +60,10 @@ class MyPerson():
         else:
             self.page+=page
         self.mytrack = []
-        tracks =  self.client.users_likes_tracks()
-        print(tracks)
+        tracks = self.client.users_likes_tracks()
         for i in range(0+self.count*self.page-5,self.count*self.page):
             print(0+self.count*self.page-5,self.count*self.page, self.page)
-            self.mytrack.append(Track(
-                int(tracks[i].id),
-                                      tracks[i],
-                self.client.tracks(tracks[i].id)[0].title,
-                ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
+            self.mytrack.append(Track(int(tracks[i].id),tracks[i],self.client.tracks(tracks[i].id)[0].title,", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
 
     def download(self,id):
@@ -91,7 +83,7 @@ class MyPerson():
         return title
 
     def search(self, query):
-        search_result = self.client.search(query)
+        search_result = client.search(query)
         text = [f'Результаты по запросу "{query}":', '']
         best_result_text = ''
         if search_result.best:
@@ -133,7 +125,7 @@ class MyPerson():
         return [self.type_to_name.get(type_), best]
 
     def search_res(self, query):
-        search_result = self.client.search(query)
+        search_result = client.search(query)
         text = [f'Результаты по запросу "{query}":', '']
         best_result_text = ''
         if search_result.best:
@@ -176,11 +168,11 @@ class MyPerson():
 
 
 
-    def get_playlists(self):
-        res=[]
-        for i in self.client.usersPlaylistsList():
-            res.append([i.title,i.playlistId.split(":")[1]])
-        return res
+    # async def get_playlists(self):
+    #     res=[]
+    #     for i in await self.client.usersPlaylistsList():
+    #         res.append([i.title,i.playlistId.split(":")[1]])
+    #     return res
 
     def get_tracks_by_playlist(self,page=0):
         if page==0:
@@ -197,9 +189,9 @@ class MyPerson():
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
 
-    def get_albums(self):
+    async def get_albums(self):
         res = []
-        albums = self.client.users_likes_albums()
+        albums = await self.client.users_likes_albums()
         for i in albums:
             res.append([str(i.album.artists_name())[2:-2], i.album.title, i.album.id])
         return res
@@ -270,9 +262,26 @@ class MyPerson():
                 self.mytrack.append(Track(int(tracks[i].id), tracks[i], self.client.tracks(tracks[i].id)[0].title,
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
+import asyncio
+from yandex_music import ClientAsync
+
+class MyAsyncPerson(MyPerson):
+    def __init__(self):
+        # self.client = ClientAsync().init
+        pass
 
 
+    async def setTOKEN(self, TOKEN):
+        self.TOKEN = TOKEN
 
+        self.client = ClientAsync(TOKEN)
+
+        await self.client.init()
+    async def get_playlists(self):
+        res=[]
+        for i in await self.client.usersPlaylistsList():
+            res.append([i.title,i.playlistId.split(":")[1]])
+        return res
 
 
 # '''Сюда нужно передать токен'''
