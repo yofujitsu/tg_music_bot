@@ -26,6 +26,11 @@ class MyPerson():
     def __init__(self):
         self.client = Client().init()
 
+    def get_playlists(self):
+        res = []
+        for i in self.client.usersPlaylistsList():
+            res.append([i.title, i.playlistId.split(":")[1]])
+        return res
 
     def setTOKEN(self, TOKEN):
         self.TOKEN = TOKEN
@@ -189,9 +194,9 @@ class MyPerson():
                                           ", ".join(self.client.tracks(tracks[i].id)[0].artists_name())))
         return self.mytrack
 
-    async def get_albums(self):
+    def get_albums(self):
         res = []
-        albums = await self.client.users_likes_albums()
+        albums = self.client.users_likes_albums()
         for i in albums:
             res.append([str(i.album.artists_name())[2:-2], i.album.title, i.album.id])
         return res
