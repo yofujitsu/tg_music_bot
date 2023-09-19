@@ -54,8 +54,8 @@ def hello(message):
                      text="""Привет! Если хочешь ознакомиться с командами - жми menu. Хочешь узнать, что делает каждая команда - жми help.""",
                      reply_markup=markup1)
 
-
-@bot.message_handler(commands=['help'])
+#ЗДЕСЬ ОШИБКА
+@bot.message_handler(commands=['help1'])
 def commands_rofl(message):
     bot.send_message(message.chat.id,
                      text="Привет! Я телеграм-бот, который поможет тебе скачать твою музыку из стриминговой платформы Яндекс.Музыка. С моей помощью ты сможешь:"
@@ -288,7 +288,7 @@ def playlists_tracks_query_handler(call: types.CallbackQuery):
         bot.send_message(call.message.chat.id, text="Список аудиозаписей из плейлиста", reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith("P"))
+@bot.callback_query_handler(func=lambda call: call.data.startswith("#P"))
 def playlists_query_handler(call: types.CallbackQuery):
     try:
         me.setPlaylist(call.data[1:])
@@ -388,7 +388,8 @@ def albums_query_handler(call: types.CallbackQuery):
 
 @bot.callback_query_handler(func=lambda call: "_my" in call.data )
 def tracks_switch_query_handler(call: types.CallbackQuery):
-    if call.data == "next_my":
+    # ЗДЕСЬ ОШИБКА
+    if call.data == "next_my1":
         # me.page+=1
         tracks_titles = me.get_likes_tracks(1)
         buttons = []
@@ -449,7 +450,7 @@ def tracks_query_handler(call: types.CallbackQuery):
         # bot.send_message(call.message.chat.id, text="Похоже, что этот трек вам понравился...",
         #                  reply_markup=keyboard_fav)
     except Exception as e:
-        print("хуй там")
+        print("фиг там")
 
 
 @bot.callback_query_handler(func=lambda call: "add" in call.data)
@@ -485,7 +486,7 @@ def my_playlists(message):
     low_row = [
         types.InlineKeyboardButton(text="<-", callback_data="prev_pl"),
         types.InlineKeyboardButton(text=me.page, callback_data="curr_page_pl"),
-        types.InlineKeyboardButton(text="Хуй>", callback_data="next_pl")
+        types.InlineKeyboardButton(text="->", callback_data="next_pl")
     ]
     low_links = [
         types.InlineKeyboardButton(text="creator 1", url="https://github.com/yofujitsu"),
@@ -546,7 +547,8 @@ def bebra(message):
                                   "получать музыку из плейлиста 'Мне нравится', а также добавлять туда треки из других источников; получать музыку из добавленных альбомов и собственных плейлистов. "
                                   "Для доступа к этим данным тебе необходимо авторизоваться. Пиши /auth, чтобы авторизоваться. Сила в музыке! ")
 
-        elif (message.text == "Вернуться в главное меню"):
+        #ЗДЕСЬ ОШИБКА
+        elif (message.text == "Вернуться в главное меню!"):
             bot.send_message(message.chat.id, text="Beep-beep... -_-", reply_markup=None)
             hello(message)
 
@@ -570,7 +572,7 @@ def bebra(message):
                                   "получать музыку из плейлиста 'Мне нравится', а также добавлять туда треки из других источников; получать музыку из добавленных альбомов и собственных плейлистов. "
                                   "Для доступа к этим данным тебе необходимо авторизоваться. Пиши /auth, чтобы авторизоваться. Сила в музыке! ")
 
-        elif (message.text == "Вернуться в главное меню"):
+        elif (message.text == "Вернуться в главное меню!"):
             bot.send_message(message.chat.id, text="Beep-beep... -_-", reply_markup=None)
             hello(message)
 
