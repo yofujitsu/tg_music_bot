@@ -54,6 +54,7 @@ python bot.py
 
 ## Внешний вид сервиса
 ### Страница диалога с ботом в telegram
+### Бота можно найти по ссылке https://t.me/testdebiloidbot
 ![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/7e2d0f10-a87d-49fa-b670-46048dc3bc06)
 Бот успешно протестирован и размещен на облачном хостинге.
 
