@@ -1,5 +1,4 @@
-![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/3a8940e1-3a05-49ad-a689-98c1719e3060)![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/bc85ba47-4af7-48c7-a0e5-c7afa4ea6fc2)# FromYandexMusicBot
-![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/227f865d-cdc6-448c-992e-16baaad2f07e)
+
 
 ## Командный проект по курсу "Технологии разработки программных приложений" в РТУ МИРЭА
 ## Описание проекта
