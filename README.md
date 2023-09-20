@@ -1,4 +1,4 @@
-# FromYandexMusicBot
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/3a8940e1-3a05-49ad-a689-98c1719e3060)![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/bc85ba47-4af7-48c7-a0e5-c7afa4ea6fc2)# FromYandexMusicBot
 ![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/227f865d-cdc6-448c-992e-16baaad2f07e)
 
 ## Командный проект по курсу "Технологии разработки программных приложений" в РТУ МИРЭА
@@ -70,4 +70,25 @@ python bot.py
 ### Команда /start
 Команда /start запускает работу бота и открывает меню из двух кнопок: "menu" и "help"
 ![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/c8fad584-510c-4e4a-9de0-f540f81536ea)
+### Команда /auth
+Команда /auth запускает процесс авторизации через профиль Яндекс.Музыки
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/1c247af1-bccf-4add-8a73-50b33ded790b)
+### Команда /exit
+Команда /exit запускает процесс выхода из аккаунта
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/028d028f-6f0d-4b92-8a7b-d5dc1cd2845f)
+### Команда /help
+Команда /help выводит мануал по боту
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/c8fad584-510c-4e4a-9de0-f540f81536ea)
+### Команда /my
+Команда /my выводит избранные терков
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/bb2adcf4-d00b-49b7-a03f-0c9fff3a6fe4)
+### Команда /s
+Команда /s выводит музыку из добавленных альбомов
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/e7c44d12-dc46-4425-b104-270589a4b193)
+### Команда /ps
+Команда /ps выводит музыку из плейлистов
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/dcb556ab-1394-4dee-8365-9b841db1a36a)
+### Команда /menu
+Команда /menu выводит кнопки главного меню
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/510317c9-714d-4e68-ad7a-0e371b05df25)
 
