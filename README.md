@@ -56,5 +56,14 @@ python bot.py
 ### Страница диалога с ботом в telegram
 ### Бота можно найти по ссылке https://t.me/testdebiloidbot
 ![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/7e2d0f10-a87d-49fa-b670-46048dc3bc06)
-Бот успешно протестирован и размещен на облачном хостинге.
+
+
+## Мануал по кнопкам
+### 
+
+
+## Мануал по командам
+### Команда /start
+Команда /start запускает работу бота и открывает меню из двух кнопок: "menu" и "help"
+![image](https://github.com/yofujitsu/tg_music_bot/assets/78373273/c8fad584-510c-4e4a-9de0-f540f81536ea)
 
